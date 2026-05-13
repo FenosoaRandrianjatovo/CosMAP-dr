@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cosmap-dr"
+version = "0.1.0"
+description = "CosMAP: Contrastive Manifold Approximation and Projection"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+  {name = "Fenosoa Randrianjatovo"}
+]
+dependencies = [
+  "numpy",
+  "scipy",
+  "scikit-learn",
+  "torch",
+  "tqdm",
+  "umap-learn"
+]
+
+[project.optional-dependencies]
+gpu = ["faiss-gpu"]
+dev = ["matplotlib", "pytest"]
+
+[tool.setuptools]
+packages = ["cosmap"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.package-data]
+cosmap = ["py.typed"]

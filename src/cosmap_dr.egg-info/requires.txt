@@ -1,0 +1,13 @@
+numpy
+scipy
+scikit-learn
+torch
+tqdm
+umap-learn
+
+[dev]
+matplotlib
+pytest
+
+[gpu]
+faiss-gpu
