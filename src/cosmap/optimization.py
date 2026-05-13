@@ -1,10 +1,7 @@
 # Author: Fenosoa  Randrianjatovo <RandrianjatovoFenosoa@gmail.com>
 """Low-dimensional CosMAP/UMAP-style optimization.
 
-The force formulas and optimization structure are preserved from the original
-single-file implementation.  The only intentional reproducibility change is
-that a fixed seed is used only when the user supplied one.  ``random_state=None``
-does not silently become seed 42.
+
 """
 from __future__ import annotations
 
