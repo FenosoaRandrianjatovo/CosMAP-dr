@@ -30,9 +30,18 @@ source .venv/bin/activate
 # .venv\Scripts\activate
 ```
 
-3. Install the package (dependencies will be installed automatically):
+3. Install the package (From the project root):
+
+
 ```bash
 pip install -e .
+```
+4. For Google Colab, use a normal installation instead:
+   
+```bash
+import sys
+!{sys.executable} -m pip uninstall -y cosmap-dr
+!{sys.executable} -m pip install .
 ```
 
 Activate your virtual environment, then run the same command.
