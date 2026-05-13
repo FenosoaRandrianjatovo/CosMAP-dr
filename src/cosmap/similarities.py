@@ -1,7 +1,6 @@
 # Author: Fenosoa  Randrianjatovo <RandrianjatovoFenosoa@gmail.com>
 """CosMAP graph construction.
 
-This module intentionally keeps the original CosMAP graph logic:
 1. L2-normalize high-dimensional data.
 2. Find k-nearest neighbors using inner product over normalized vectors.
 3. Convert neighbor cosine scores to temperature-scaled softmax weights.
