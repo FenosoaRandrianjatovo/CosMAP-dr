@@ -40,7 +40,6 @@ pip install -e .
    
 ```bash
 import sys
-!{sys.executable} -m pip uninstall -y cosmap-dr
 !{sys.executable} -m pip install .
 ```
 
