@@ -1,7 +1,6 @@
 # Author: Fenosoa  Randrianjatovo <RandrianjatovoFenosoa@gmail.com>
 """Low-dimensional CosMAP/UMAP-style optimization.
 
-
 """
 from __future__ import annotations
 
