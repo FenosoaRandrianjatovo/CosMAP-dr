@@ -59,7 +59,42 @@ CosMAP's policy is:
 2. If CUDA is available but FAISS is CPU-only, skip FAISS-CPU and use batched torch GPU kNN.
 3. Use sklearn CPU kNN only when no CUDA/MPS GPU device is selected or available.
 
-## Quick run
+## Quick Start
+
+```python
+import numpy as np
+from cosmap import CosMAP
+from sklearn.datasets import load_digits
+
+# Load sample data
+digits = load_digits()
+X = digits.data
+
+# Create CosMAP instance
+cosmap_ = CosMAP(
+    n_components=2,
+    n_neighbors=15,
+    temperature=0.5,
+    random_state=None,          # no fixed seed, faster stochastic path
+    deterministic=False,        # do not force slow deterministic CUDA kernels
+    verbose=True,
+    use_gpu=True,               # Using GPU acceleration 
+    optimizer_backend="torch_manual",
+    faiss_backend="auto",
+)
+
+# Fit and transform the data
+X_embedded = cosmap_.fit_transform(X)
+
+# Plot the results
+import matplotlib.pyplot as plt
+plt.scatter(X_embedded[:, 0], X_embedded[:, 1], c=digits.target, cmap='tab10')
+plt.colorbar()
+plt.title('CosMAP embedding of digits dataset')
+plt.show()
+```
+
+## Quick Start for MNIST
 
 ```python
 import numpy as np
@@ -70,7 +105,7 @@ import matplotlib.pyplot as plt
 mnist = fetch_openml("mnist_784", version=1, as_frame=False)
 X, y = mnist.data, mnist.target.astype(int)
 
-cosmap = CosMAP(
+cosmap_ = CosMAP(
     n_components=2,
     n_neighbors=15,
     temperature=0.5,
@@ -83,7 +118,7 @@ cosmap = CosMAP(
     faiss_backend="auto",
 )
 
-X_embedded = cosmap.fit_transform(X)
+X_embedded = cosmap_.fit_transform(X)
 
 plt.figure(figsize=(8, 6))
 scatter = plt.scatter(X_embedded[:, 0], X_embedded[:, 1], c=y, cmap="tab10", s=1, alpha=0.7)
