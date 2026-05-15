@@ -160,6 +160,7 @@ def compute_cosine_similarity_graph(
             n_neighbors=n_neighbors + 1,
             algorithm="auto",
             metric="cosine",
+            n_jobs=-1,
         ).fit(Y_cpu)
         _, indices = nbrs.kneighbors(Y_cpu)
         neighbors_indices = torch.as_tensor(indices[:, 1:], dtype=torch.long, device=device)
