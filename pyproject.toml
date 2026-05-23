@@ -25,10 +25,10 @@ gpu = ["faiss-gpu"]
 dev = ["matplotlib", "pytest"]
 
 [tool.setuptools]
-packages = ["cosmap"]
+packages = ["cosmapdr"]
 
 [tool.setuptools.package-dir]
 "" = "src"
 
 [tool.setuptools.package-data]
-cosmap = ["py.typed"]
+cosmapdr = ["py.typed"]

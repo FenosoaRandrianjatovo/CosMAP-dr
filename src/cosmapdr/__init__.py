@@ -1,5 +1,5 @@
 """CosMAP package."""
-from .cosmap import CosMAP
+from .cosmapdr import CosMAP
 from .utils import cleanup_torch_memory, diagnose_cosmap_environment, print_memory_state
 
 __all__ = [
