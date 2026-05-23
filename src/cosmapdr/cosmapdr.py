@@ -299,7 +299,7 @@ class CosMAP(BaseEstimator, TransformerMixin):
                     metric=self.metric,
                     n_neighbors=int(self.n_neighbors),
                     temperature=float(self.temperature),
-                    use_gpu=bool(self.use_gpu)
+                    use_gpu=bool(self.use_gpu),
                     batch_size=int(self.batch_size),
                     faiss_backend=str(self.faiss_backend),
                     verbose=bool(self.verbose),
