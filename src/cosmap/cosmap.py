@@ -19,7 +19,7 @@ from sklearn.utils.validation import check_array, check_is_fitted
 from .kernels import find_ab_
 from .optimization import optimization_simplicial_set
 from .reproducibility import child_seed, make_random_state
-from .similarities import compute_cosine_similarity_graph
+from .similarities import compute_similarity_graph
 from .utils import cleanup_torch_memory, get_torch_device, ts
 
 
@@ -293,15 +293,26 @@ class CosMAP(BaseEstimator, TransformerMixin):
 
     def _compute_similarity_matrix(self, X: np.ndarray):
         """Compute CosMAP's sparse temperature-scaled cosine similarity graph."""
-        return compute_cosine_similarity_graph(
-            X,
-            n_neighbors=int(self.n_neighbors),
-            temperature=float(self.temperature),
-            use_gpu=bool(self.use_gpu),
-            batch_size=int(self.batch_size),
-            faiss_backend=str(self.faiss_backend),
-            verbose=bool(self.verbose),
-        )
+
+        return compute_similarity_graph(
+                    X,
+                    metric=self.metric,
+                    n_neighbors=int(self.n_neighbors),
+                    temperature=float(self.temperature),
+                    use_gpu=bool(self.use_gpu)
+                    batch_size=int(self.batch_size),
+                    faiss_backend=str(self.faiss_backend),
+                    verbose=bool(self.verbose),
+                )
+        # return compute_cosine_similarity_graph(
+        #     X,
+        #     n_neighbors=int(self.n_neighbors),
+        #     temperature=float(self.temperature),
+        #     use_gpu=bool(self.use_gpu),
+        #     batch_size=int(self.batch_size),
+        #     faiss_backend=str(self.faiss_backend),
+        #     verbose=bool(self.verbose),
+        # )
 
     def fit(self, X: np.ndarray, y: Optional[np.ndarray] = None) -> "CosMAP":
         """Fit CosMAP to X."""
