@@ -223,3 +223,299 @@ def compute_cosine_similarity_graph(
     sparse_matrix = sp.coo_matrix((vals, (rows, cols)), shape=(n_samples, n_samples))
     sparse_matrix.sum_duplicates()
     return sparse_matrix.tocsr()
+
+
+def compute_euclidean_similarity_graph(
+    X: np.ndarray,
+    *,
+    n_neighbors: int,
+    temperature: float,
+    use_gpu: bool = True,
+    batch_size: int = 1000,
+    faiss_backend: str = "auto",
+    verbose: bool = False,
+) -> sp.csr_matrix:
+    """
+    Compute CosMAP's sparse temperature-scaled Euclidean similarity graph.
+
+    Unlike the cosine version, this function does NOT L2-normalize X.
+    It finds nearest neighbors under Euclidean distance and converts distances
+    into local probabilities using a softmax over negative squared distances:
+
+        p_ij ∝ exp(-||x_i - x_j||^2 / temperature)
+
+    Therefore, close points receive larger graph weights.
+    """
+    faiss_backend = str(faiss_backend).lower()
+    if faiss_backend not in {"auto", "gpu", "none"}:
+        raise ValueError(
+            "faiss_backend must be one of: 'auto', 'gpu', or 'none'. "
+            "FAISS-CPU fallback is intentionally disabled."
+        )
+
+    if temperature <= 0:
+        raise ValueError("temperature must be positive")
+
+    if faiss_backend == "none":
+        faiss = None
+        faiss_has_cpu = False
+        faiss_has_gpu = False
+        if verbose:
+            print(f"{ts()} FAISS disabled by faiss_backend='none'")
+    else:
+        faiss, faiss_has_cpu, faiss_has_gpu = safe_import_faiss(verbose=verbose)
+
+    if faiss_backend == "gpu" and (not torch.cuda.is_available() or not faiss_has_gpu):
+        raise RuntimeError(
+            "faiss_backend='gpu' was requested, but CUDA and FAISS-GPU are not both available. "
+            "Fix the environment/module so FAISS-GPU is imported, or use faiss_backend='auto'."
+        )
+
+    if faiss is not None and faiss_has_cpu and not faiss_has_gpu and verbose:
+        print(
+            f"{ts()} FAISS-CPU was detected but will not be used automatically. "
+            "CosMAP uses FAISS only when CUDA + FAISS-GPU are both available."
+        )
+
+    device = get_torch_device(use_gpu=use_gpu)
+
+    if isinstance(X, np.ndarray):
+        X_tensor = torch.from_numpy(X).float()
+    else:
+        X_tensor = X.float()
+
+    X_tensor = X_tensor.to(device)
+    n_samples = int(X_tensor.shape[0])
+
+    if n_neighbors >= n_samples:
+        raise ValueError("n_neighbors must be smaller than the number of samples")
+
+    if verbose:
+        print(f"{ts()} Using raw input data on {device} for Euclidean graph")
+
+    Y = X_tensor
+
+    if verbose:
+        print(f"{ts()} Finding Euclidean k-nearest neighbors")
+
+    use_faiss_gpu_now = (
+        faiss is not None
+        and faiss_has_gpu
+        and faiss_backend in {"auto", "gpu"}
+        and use_gpu
+        and torch.cuda.is_available()
+        and device.type == "cuda"
+        and hasattr(faiss, "GpuIndexFlatL2")
+    )
+
+    if use_faiss_gpu_now:
+        if verbose:
+            print(f"{ts()} Using FAISS GPU IndexFlatL2")
+
+        Y_np = Y.detach().cpu().numpy().astype(np.float32)
+
+        res = faiss.StandardGpuResources()
+        index = faiss.GpuIndexFlatL2(res, Y_np.shape[1])
+        index.add(Y_np)
+
+        _, I = index.search(Y_np, n_neighbors + 1)
+        neighbors_indices = torch.as_tensor(I[:, 1:], dtype=torch.long, device=device)
+
+        del Y_np, I, index, res
+        gc.collect()
+
+    elif use_gpu and device.type in {"cuda", "mps"}:
+        if verbose and device.type == "cuda" and faiss is not None and not faiss_has_gpu:
+            print(
+                f"{ts()} CUDA is available, but the imported FAISS has no GPU symbols; "
+                "using batched torch GPU Euclidean k-NN instead."
+            )
+
+        if verbose and device.type == "mps":
+            print(
+                f"{ts()} MPS is available on this Mac; "
+                "FAISS-GPU is CUDA-only here, so using batched torch MPS Euclidean k-NN instead."
+            )
+
+        if verbose:
+            print(f"{ts()} Using batched torch {device.type.upper()} Euclidean k-NN")
+
+        neighbors_indices = torch.zeros(
+            (n_samples, n_neighbors),
+            dtype=torch.long,
+            device=device,
+        )
+
+        k_nn_batch_size = min(batch_size * 5, 5000)
+
+        y_norm = torch.sum(Y * Y, dim=1)
+
+        for i in tqdm(
+            range(0, n_samples, k_nn_batch_size),
+            desc=f"Finding Euclidean k-NN on {device.type.upper()}",
+            disable=not verbose,
+        ):
+            end_idx = min(i + k_nn_batch_size, n_samples)
+            batch_Y = Y[i:end_idx]
+
+            # Squared Euclidean distance:
+            # ||a-b||^2 = ||a||^2 + ||b||^2 - 2<a,b>
+            batch_norm = torch.sum(batch_Y * batch_Y, dim=1, keepdim=True)
+            sq_dist = batch_norm + y_norm.unsqueeze(0) - 2.0 * torch.mm(batch_Y, Y.t())
+            sq_dist = torch.clamp(sq_dist, min=0.0)
+
+            row_ids = torch.arange(end_idx - i, device=device)
+            col_ids = torch.arange(i, end_idx, device=device)
+            sq_dist[row_ids, col_ids] = float("inf")
+
+            _, topk_indices = torch.topk(
+                sq_dist,
+                n_neighbors,
+                dim=1,
+                largest=False,
+            )
+
+            neighbors_indices[i:end_idx] = topk_indices
+
+            del batch_Y, batch_norm, sq_dist, topk_indices
+
+            if device.type == "cuda":
+                torch.cuda.empty_cache()
+            elif device.type == "mps":
+                try:
+                    torch.mps.empty_cache()
+                except Exception:
+                    pass
+
+        del y_norm
+
+    else:
+        if verbose:
+            print(f"{ts()} Using sklearn NearestNeighbors CPU fallback with metric='euclidean'")
+
+        Y_cpu = Y.detach().cpu().numpy()
+
+        nbrs = NearestNeighbors(
+            n_neighbors=n_neighbors + 1,
+            algorithm="auto",
+            metric="euclidean",
+            n_jobs=-1,
+        ).fit(Y_cpu)
+
+        _, indices = nbrs.kneighbors(Y_cpu)
+        neighbors_indices = torch.as_tensor(indices[:, 1:], dtype=torch.long, device=device)
+
+        del Y_cpu, indices
+
+    if verbose:
+        print(f"{ts()} Building sparse temperature-softmax Euclidean graph")
+
+    rows_all = []
+    cols_all = []
+    vals_all = []
+
+    for i in tqdm(
+        range(0, n_samples, batch_size),
+        desc="Computing Euclidean similarities",
+        disable=not verbose,
+    ):
+        end_idx = min(i + batch_size, n_samples)
+
+        batch_rows = torch.arange(i, end_idx, device=device, dtype=torch.long)
+        neigh = neighbors_indices[i:end_idx]
+
+        y_i = Y[batch_rows]
+        y_j = Y[neigh]
+
+        sq_dists = torch.sum((y_i.unsqueeze(1) - y_j) ** 2, dim=2)
+        probs = torch.softmax(-sq_dists / temperature, dim=1) * 0.5
+
+        source_rows = batch_rows.unsqueeze(1).expand(-1, n_neighbors).reshape(-1)
+        target_cols = neigh.reshape(-1)
+        values = probs.reshape(-1)
+
+        rows = torch.cat([source_rows, target_cols], dim=0).detach().cpu().numpy()
+        cols = torch.cat([target_cols, source_rows], dim=0).detach().cpu().numpy()
+        vals = torch.cat([values, values], dim=0).detach().cpu().numpy()
+
+        rows_all.append(rows)
+        cols_all.append(cols)
+        vals_all.append(vals)
+
+        del y_i, y_j, sq_dists, probs, source_rows, target_cols, values
+
+        if device.type == "cuda" and (i // max(batch_size, 1)) % 5 == 0:
+            torch.cuda.empty_cache()
+        elif device.type == "mps" and (i // max(batch_size, 1)) % 5 == 0:
+            try:
+                torch.mps.empty_cache()
+            except Exception:
+                pass
+
+    del Y, neighbors_indices
+    gc.collect()
+
+    if device.type == "cuda":
+        torch.cuda.empty_cache()
+    elif device.type == "mps":
+        try:
+            torch.mps.empty_cache()
+        except Exception:
+            pass
+
+    rows = np.concatenate(rows_all).astype(np.int64)
+    cols = np.concatenate(cols_all).astype(np.int64)
+    vals = np.concatenate(vals_all).astype(np.float32)
+
+    sparse_matrix = sp.coo_matrix((vals, (rows, cols)), shape=(n_samples, n_samples))
+    sparse_matrix.sum_duplicates()
+
+    return sparse_matrix.tocsr()
+
+
+def compute_similarity_graph(
+    X: np.ndarray,
+    *,
+    metric: str = "cosine",
+    n_neighbors: int,
+    temperature: float,
+    use_gpu: bool = True,
+    batch_size: int = 1000,
+    faiss_backend: str = "auto",
+    verbose: bool = False,
+) -> sp.csr_matrix:
+    """
+    Compute a sparse CosMAP graph using either cosine or Euclidean geometry.
+
+    Parameters
+    ----------
+    metric : {"cosine", "euclidean"}, default="cosine"
+        Distance/similarity geometry used to construct the high-dimensional graph.
+        - "cosine": L2-normalizes X and uses inner products.
+        - "euclidean": uses raw X and converts squared Euclidean distances into similarities.
+    """
+    metric = str(metric).lower()
+
+    if metric == "cosine":
+        return compute_cosine_similarity_graph(
+            X,
+            n_neighbors=n_neighbors,
+            temperature=temperature,
+            use_gpu=use_gpu,
+            batch_size=batch_size,
+            faiss_backend=faiss_backend,
+            verbose=verbose,
+        )
+
+    if metric == "euclidean":
+        return compute_euclidean_similarity_graph(
+            X,
+            n_neighbors=n_neighbors,
+            temperature=temperature,
+            use_gpu=use_gpu,
+            batch_size=batch_size,
+            faiss_backend=faiss_backend,
+            verbose=verbose,
+        )
+
+    raise ValueError("metric must be one of: 'cosine' or 'euclidean'")
