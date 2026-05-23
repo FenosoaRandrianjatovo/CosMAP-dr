@@ -1,10 +1,5 @@
 # Author: Fenosoa  Randrianjatovo <RandrianjatovoFenosoa@gmail.com>
 """CosMAP graph construction.
-
-1. L2-normalize high-dimensional data.
-2. Find k-nearest neighbors using inner product over normalized vectors.
-3. Convert neighbor cosine scores to temperature-scaled softmax weights.
-4. Symmetrize the sparse graph by adding both i->j and j->i.
 """
 from __future__ import annotations
 
