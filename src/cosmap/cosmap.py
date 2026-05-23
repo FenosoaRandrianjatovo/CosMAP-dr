@@ -292,7 +292,7 @@ class CosMAP(BaseEstimator, TransformerMixin):
         return self
 
     def _compute_similarity_matrix(self, X: np.ndarray):
-        """Compute CosMAP's sparse temperature-scaled cosine similarity graph."""
+        """Compute CosMAP's sparse temperature-scaled similarity graph."""
 
         return compute_similarity_graph(
                     X,
