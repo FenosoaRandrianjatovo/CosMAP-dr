@@ -40,7 +40,7 @@ class CosMAP(BaseEstimator, TransformerMixin):
         verbose: bool = False,
         use_gpu: bool = True,
         batch_size: int = 1000,
-        metric: str = "euclidean",
+        metric: str = "cosine",  #euclidean is not fully optimized
         init: Union[str, np.ndarray] = "spectral",
         optimizer_backend: str = "torch_manual",
         torch_batch_size: int = 65536,
