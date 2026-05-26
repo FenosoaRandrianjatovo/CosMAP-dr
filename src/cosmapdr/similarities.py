@@ -148,18 +148,43 @@ def compute_cosine_similarity_graph(
                     pass
 
     else:
+        # if verbose:
+        #     print(f"{ts()} Using sklearn NearestNeighbors CPU fallback")
+        # Y_cpu = Y.detach().cpu().numpy()
+        # nbrs = NearestNeighbors(
+        #     n_neighbors=n_neighbors + 1,
+        #     algorithm="auto",
+        #     metric="cosine",
+        #     n_jobs=-1,
+        # ).fit(Y_cpu)
+        # _, indices = nbrs.kneighbors(Y_cpu)
+        # neighbors_indices = torch.as_tensor(indices[:, 1:], dtype=torch.long, device=device)
+        # del Y_cpu, indices
+        from pynndescent import NNDescent
+
         if verbose:
-            print(f"{ts()} Using sklearn NearestNeighbors CPU fallback")
-        Y_cpu = Y.detach().cpu().numpy()
-        nbrs = NearestNeighbors(
+            print(f"{ts()} Using PyNNDescent CPU fallback (Cosine)")
+
+        Y_cpu = Y.detach().cpu().numpy().astype("float32", copy=False)
+
+        index = NNDescent(
+            Y_cpu,
             n_neighbors=n_neighbors + 1,
-            algorithm="auto",
             metric="cosine",
             n_jobs=-1,
-        ).fit(Y_cpu)
-        _, indices = nbrs.kneighbors(Y_cpu)
-        neighbors_indices = torch.as_tensor(indices[:, 1:], dtype=torch.long, device=device)
-        del Y_cpu, indices
+            random_state=42,
+            verbose=verbose,
+        )
+
+        indices, _ = index.neighbor_graph
+
+        neighbors_indices = torch.as_tensor(
+            indices[:, 1:],
+            dtype=torch.long,
+            device=device,
+        )
+
+        del Y_cpu, indices, index
 
     if verbose:
         print(f"{ts()} Building sparse temperature-softmax graph")
