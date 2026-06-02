@@ -304,15 +304,6 @@ class CosMAP(BaseEstimator, TransformerMixin):
                     faiss_backend=str(self.faiss_backend),
                     verbose=bool(self.verbose),
                 )
-        # return compute_cosine_similarity_graph(
-        #     X,
-        #     n_neighbors=int(self.n_neighbors),
-        #     temperature=float(self.temperature),
-        #     use_gpu=bool(self.use_gpu),
-        #     batch_size=int(self.batch_size),
-        #     faiss_backend=str(self.faiss_backend),
-        #     verbose=bool(self.verbose),
-        # )
 
     def fit(self, X: np.ndarray, y: Optional[np.ndarray] = None) -> "CosMAP":
         """Fit CosMAP to X."""
