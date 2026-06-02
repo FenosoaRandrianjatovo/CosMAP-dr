@@ -48,7 +48,7 @@ Activate your virtual environment, then run the same command.
 ## Check GPU / FAISS environment
 
 ```python
-from cosmap import diagnose_cosmap_environment
+from cosmapdr import diagnose_cosmap_environment
 
 diagnose_cosmap_environment()
 ```
@@ -63,7 +63,7 @@ CosMAP's policy is:
 
 ```python
 import numpy as np
-from cosmap import CosMAP
+from cosmapdr import CosMAP
 from sklearn.datasets import load_digits
 
 # Load sample data
@@ -98,7 +98,7 @@ plt.show()
 
 ```python
 import numpy as np
-from cosmap import CosMAP
+from cosmapdr import CosMAP
 from sklearn.datasets import fetch_openml
 import matplotlib.pyplot as plt
 
@@ -208,7 +208,7 @@ CosMAP follows the scikit-learn API conventions:
 
 ```python
 # Similar to UMAP, PaCMAP, t-SNE
-from cosmap import CosMAP
+from cosmapdr import CosMAP
 from umap import UMAP
 from sklearn.manifold import TSNE
 
