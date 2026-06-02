@@ -55,7 +55,7 @@ def initialize_embedding(
     metric_kwds: Optional[dict],
     seed: Optional[int] = None,
 ) -> np.ndarray:
-    """Initialize embedding using the same options as the original CosMAP file."""
+    """Initialize embedding using the original CosMAP paper."""
     if isinstance(init, str) and init == "random":
         embedding = random_state.uniform(
             low=-10.0, high=10.0, size=(graph.shape[0], n_components)
