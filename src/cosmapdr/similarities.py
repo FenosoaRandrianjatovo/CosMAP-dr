@@ -23,7 +23,7 @@ def compute_cosine_similarity_graph(
     temperature: float,
     use_gpu: bool = True,
     batch_size: int = 1000,
-    faiss_backend: str = "auto",
+    faiss_backend: str = "none", #auto
     verbose: bool = False,
 ) -> sp.csr_matrix:
     """Compute CosMAP's sparse temperature-scaled cosine similarity graph."""
