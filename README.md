@@ -80,7 +80,6 @@ cosmap_ = CosMAP(
     verbose=True,
     use_gpu=True,               # Using GPU acceleration 
     optimizer_backend="torch_manual",
-    faiss_backend="auto",
 )
 
 # Fit and transform the data
