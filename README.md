@@ -34,7 +34,7 @@ source .venv/bin/activate
 
 
 ```bash
-pip install -e .
+pip install  .
 ```
 4. For Google Colab, use a normal installation instead:
    
