@@ -1,4 +1,4 @@
-from cosmap import CosMAP, diagnose_cosmap_environment
+from cosmapdr import CosMAP, diagnose_cosmap_environment
 from sklearn.datasets import load_digits
 import matplotlib.pyplot as plt
 
