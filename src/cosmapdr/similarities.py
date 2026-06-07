@@ -257,12 +257,10 @@ def compute_euclidean_similarity_graph(
 ) -> sp.csr_matrix:
     """
     Compute CosMAP's sparse temperature-scaled Euclidean similarity graph.
-
-    Unlike the cosine version, this function does NOT L2-normalize X.
     It finds nearest neighbors under Euclidean distance and converts distances
     into local probabilities using a softmax over negative squared distances:
 
-        p_ij ∝ exp(-d(x_i - x_j)^2 / temperature)/SUM_{k in Nk(i)} exp(-d(x_i - x_k)^2 / temperature)
+        p_ij ∝ exp(-d(x_i - x_j)^2 / temperature)/sum_{k in Nk(i)} exp(-d(x_i - x_k)^2 / temperature)
 
     where Nk(i) is the set of k nearest neighbors of x_i under Euclidean distance.
     """
