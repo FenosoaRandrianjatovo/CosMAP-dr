@@ -1,7 +1,6 @@
 # CosMAP
 
-CosMAP (**Contrastive Manifold Approximation and Projection**) is a dimensionality-reduction estimator with a scikit-learn-like API. It builds a high-dimensional graph based on a temperature-scaled local softmax, then optimizes a low-dimensional embedding with a binary cross-entropy objective.
-
+CosMAP (**Contrastive Manifold Approximation and Projection**) is a dimensionality-reduction estimator with a scikit-learn-like API. 
 
 ## Installation
 
