@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from sklearn.datasets import fetch_openml
-from cosmap import CosMAP, diagnose_cosmap_environment
+from cosmapdr import CosMAP, diagnose_cosmap_environment
 
 mnist = fetch_openml("mnist_784", version=1, as_frame=False)
 X, y = mnist.data, mnist.target.astype(int)
