@@ -53,12 +53,6 @@ from cosmapdr import diagnose_cosmap_environment
 diagnose_cosmap_environment()
 ```
 
-CosMAP's policy is:
-
-1. Use FAISS-GPU if CUDA and FAISS-GPU are available.
-2. If CUDA is available but FAISS is CPU-only, skip FAISS-CPU and use batched torch GPU kNN.
-3. Use sklearn CPU kNN only when no CUDA/MPS GPU device is selected or available.
-
 ## Quick Start
 
 ```python
