@@ -43,7 +43,6 @@ import sys
 !{sys.executable} -m pip install .
 ```
 
-Activate your virtual environment, then run the same command.
 
 ## Check GPU / FAISS environment
 
