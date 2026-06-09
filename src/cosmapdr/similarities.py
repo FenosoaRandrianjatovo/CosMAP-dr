@@ -490,6 +490,177 @@ def compute_euclidean_similarity_graph(
     return sparse_matrix.tocsr()
 
 
+def compute_precomputed_similarity_graph(
+    X: np.ndarray,
+    *,
+    n_neighbors: int,
+    temperature: float,
+    use_gpu: bool = True,
+    batch_size: int = 1000,
+    faiss_backend: str = "auto",
+    verbose: bool = False,
+) -> sp.csr_matrix:
+    """
+    Compute CosMAP's sparse temperature-scaled graph from a precomputed
+    pairwise similarity matrix.
+
+    The input X must be an n_samples x n_samples matrix where X[i, j] is
+    already a high-dimensional similarity score between observations i and j.
+    For each row i, the k largest off-diagonal similarities define N_k(i), and
+    the local edge weights are computed with the same temperature-softmax logic
+    used in the paper:
+
+        p_ij = softmax(X[i, N_k(i)] / temperature)_j * 0.5
+
+    The final graph is symmetrized by adding both (i, j) and (j, i), matching
+    the construction used by the cosine and Euclidean graph builders.
+    """
+    # Kept for API compatibility with compute_similarity_graph. They are not
+    # needed because nearest-neighbor search is performed directly on X.
+    _ = faiss_backend
+
+    if temperature <= 0:
+        raise ValueError("temperature must be positive")
+
+    if sp.issparse(X):
+        if X.ndim != 2:
+            raise ValueError("precomputed similarity input must be a 2D matrix")
+        if X.shape[0] != X.shape[1]:
+            raise ValueError(
+                "precomputed similarity input must be square with shape "
+                "(n_samples, n_samples)"
+            )
+        if X.data.size and not np.all(np.isfinite(X.data)):
+            raise ValueError("precomputed similarity input contains NaN or infinite values")
+        n_samples = int(X.shape[0])
+        X_csr = X.tocsr().astype(np.float32, copy=False)
+        X_tensor = None
+    else:
+        if isinstance(X, torch.Tensor):
+            if X.ndim != 2:
+                raise ValueError("precomputed similarity input must be a 2D matrix")
+            if X.shape[0] != X.shape[1]:
+                raise ValueError(
+                    "precomputed similarity input must be square with shape "
+                    "(n_samples, n_samples)"
+                )
+            if not torch.isfinite(X).all().item():
+                raise ValueError("precomputed similarity input contains NaN or infinite values")
+            n_samples = int(X.shape[0])
+            device = get_torch_device(use_gpu=use_gpu)
+            X_tensor = X.float().to(device)
+        else:
+            X_arr = np.asarray(X)
+            if X_arr.ndim != 2:
+                raise ValueError("precomputed similarity input must be a 2D matrix")
+            if X_arr.shape[0] != X_arr.shape[1]:
+                raise ValueError(
+                    "precomputed similarity input must be square with shape "
+                    "(n_samples, n_samples)"
+                )
+            if not np.all(np.isfinite(X_arr)):
+                raise ValueError("precomputed similarity input contains NaN or infinite values")
+            n_samples = int(X_arr.shape[0])
+            device = get_torch_device(use_gpu=use_gpu)
+            X_tensor = torch.from_numpy(X_arr.astype(np.float32, copy=False)).to(device)
+
+        X_csr = None
+
+    if n_samples < 2:
+        raise ValueError("precomputed similarity input must contain at least two samples")
+    if n_neighbors >= n_samples:
+        raise ValueError("n_neighbors must be smaller than the number of samples")
+    if n_neighbors <= 0:
+        raise ValueError("n_neighbors must be positive")
+    if batch_size <= 0:
+        raise ValueError("batch_size must be positive")
+
+    if verbose:
+        print(f"{ts()} Building sparse graph from precomputed similarities")
+
+    rows_all = []
+    cols_all = []
+    vals_all = []
+
+    if X_csr is not None:
+        # Sparse input is accepted for convenience. Each row is densified only
+        # for the top-k operation, while the output remains sparse.
+        for i in tqdm(range(0, n_samples, batch_size), desc="Computing precomputed graph", disable=not verbose):
+            end_idx = min(i + batch_size, n_samples)
+            batch = X_csr[i:end_idx].toarray().astype(np.float32, copy=False)
+            diag_cols = np.arange(i, end_idx)
+            batch[np.arange(end_idx - i), diag_cols] = -np.inf
+
+            topk_unsorted = np.argpartition(-batch, kth=n_neighbors - 1, axis=1)[:, :n_neighbors]
+            topk_vals_unsorted = np.take_along_axis(batch, topk_unsorted, axis=1)
+            order = np.argsort(-topk_vals_unsorted, axis=1)
+            neigh = np.take_along_axis(topk_unsorted, order, axis=1)
+            sims = np.take_along_axis(topk_vals_unsorted, order, axis=1)
+
+            sims = sims / float(temperature)
+            sims = sims - np.max(sims, axis=1, keepdims=True)
+            probs = np.exp(sims)
+            probs = (probs / np.sum(probs, axis=1, keepdims=True)) * 0.5
+
+            source_rows = np.repeat(np.arange(i, end_idx, dtype=np.int64), n_neighbors)
+            target_cols = neigh.reshape(-1).astype(np.int64)
+            values = probs.reshape(-1).astype(np.float32)
+
+            rows_all.append(np.concatenate([source_rows, target_cols]))
+            cols_all.append(np.concatenate([target_cols, source_rows]))
+            vals_all.append(np.concatenate([values, values]))
+    else:
+        device = X_tensor.device
+        for i in tqdm(range(0, n_samples, batch_size), desc="Computing precomputed graph", disable=not verbose):
+            end_idx = min(i + batch_size, n_samples)
+            batch = X_tensor[i:end_idx].clone()
+
+            row_ids = torch.arange(end_idx - i, device=device)
+            col_ids = torch.arange(i, end_idx, device=device)
+            batch[row_ids, col_ids] = -float("inf")
+
+            sims, neigh = torch.topk(batch, n_neighbors, dim=1, largest=True)
+            probs = torch.softmax(sims / temperature, dim=1) * 0.5
+
+            source_rows = torch.arange(i, end_idx, device=device, dtype=torch.long).unsqueeze(1).expand(-1, n_neighbors).reshape(-1)
+            target_cols = neigh.reshape(-1)
+            values = probs.reshape(-1)
+
+            rows = torch.cat([source_rows, target_cols], dim=0).detach().cpu().numpy()
+            cols = torch.cat([target_cols, source_rows], dim=0).detach().cpu().numpy()
+            vals = torch.cat([values, values], dim=0).detach().cpu().numpy()
+
+            rows_all.append(rows)
+            cols_all.append(cols)
+            vals_all.append(vals)
+
+            del batch, sims, neigh, probs, source_rows, target_cols, values
+            if device.type == "cuda" and (i // max(batch_size, 1)) % 5 == 0:
+                torch.cuda.empty_cache()
+            elif device.type == "mps" and (i // max(batch_size, 1)) % 5 == 0:
+                try:
+                    torch.mps.empty_cache()
+                except Exception:
+                    pass
+
+        del X_tensor
+        gc.collect()
+        if device.type == "cuda":
+            torch.cuda.empty_cache()
+        elif device.type == "mps":
+            try:
+                torch.mps.empty_cache()
+            except Exception:
+                pass
+
+    rows = np.concatenate(rows_all).astype(np.int64)
+    cols = np.concatenate(cols_all).astype(np.int64)
+    vals = np.concatenate(vals_all).astype(np.float32)
+
+    sparse_matrix = sp.coo_matrix((vals, (rows, cols)), shape=(n_samples, n_samples))
+    sparse_matrix.sum_duplicates()
+    return sparse_matrix.tocsr()
+
 def compute_similarity_graph(
     X: np.ndarray,
     *,
@@ -502,14 +673,15 @@ def compute_similarity_graph(
     verbose: bool = False,
 ) -> sp.csr_matrix:
     """
-    Compute a sparse CosMAP graph using either cosine or Euclidean geometry.
+    Compute a sparse CosMAP graph using either cosine or Euclidean , precomputed geometry.
 
     Parameters
     ----------
-    metric : {"cosine", "euclidean"}, default="cosine"
+    metric : {"cosine", "euclidean","precomputed"}, default="cosine"
         Distance/similarity geometry used to construct the high-dimensional graph.
         - "cosine": L2-normalizes X and uses inner products.
         - "euclidean": uses raw X and converts squared Euclidean distances into similarities.
+        -"precomputed": uses raw X as distance already computed
     """
     metric = str(metric).lower()
 
@@ -535,4 +707,17 @@ def compute_similarity_graph(
             verbose=verbose,
         )
 
-    raise ValueError("metric must be one of: 'cosine' or 'euclidean'")
+    if metric == "precomputed":
+        return compute_precomputed_similarity_graph(
+            X,
+            n_neighbors=n_neighbors,
+            temperature=temperature,
+            use_gpu=use_gpu,
+            batch_size=batch_size,
+            faiss_backend=faiss_backend,
+            verbose=verbose,
+        )
+
+    raise ValueError("metric must be one of: 'cosine', 'euclidean', or 'precomputed'")
+
+
