@@ -72,7 +72,7 @@ cosmap_ = CosMAP(
     verbose=True,
     use_gpu=True,               # Using GPU acceleration 
     optimizer_backend="torch_manual",
-    metric="cosine", # you can change to "euclidean"
+    metric="euclidean", # The default is  "cosine"
 )
 
 # Fit and transform the data
