@@ -183,35 +183,21 @@ CosMAP(random_state=42, deterministic=True)
 
 
 ## Parameters
-
-- `n_components`: Number of dimensions in the final embedded space (default: 2).
-- `n_neighbors`: Number of nearest neighbors used to construct the high-dimensional similarity graph in the first phase or single-phase mode (default: 15).
-- `temperature`: Temperature parameter controlling the sharpness of the high-dimensional neighbor probabilities (default: 0.5). Smaller values make the neighbor distribution more concentrated.
-- `n_epochs`: Number of optimization epochs for the main optimization phase (default: None). If None, CosMAP chooses a default based on the number of samples.
-- `learning_rate`: Initial learning rate used during embedding optimization (default: 1.0).
-- `min_dist`: Minimum effective distance between points in the low-dimensional embedding, used to determine the low-dimensional kernel parameters (default: 0.1).
-- `spread`: Scale parameter controlling how embedded points are distributed in the low-dimensional space (default: 1.0).
-- `random_state`: Random seed used for reproducibility (default: None).
-- `deterministic`: Whether to enforce deterministic behavior when possible (default: False).
-- `verbose`: Whether to print progress information during graph construction and optimization (default: False).
-- `use_gpu`: Whether to use GPU acceleration when available (default: True).
-- `batch_size`: Batch size used during high-dimensional graph construction (default: 1000).
-- `metric`: Metric used to construct the high-dimensional similarity graph (default: "cosine"). Supported values are `"cosine"`, `"euclidean"`, and `"precomputed"`.
-- `init`: Initialization method or initial embedding array used before optimization (default: "spectral"). Can also be a NumPy array with shape `(n_samples, n_components)`.
-- `optimizer_backend`: Optimization backend used for the low-dimensional embedding (default: "torch_manual").
-- `torch_batch_size`: Number of edges or samples processed per batch by the Torch optimizer backend (default: 65536).
-- `negative_sample_rate`: Number of negative samples used per positive edge during optimization (default: 5).
-- `gamma`: Weight applied to the negative sampling term in the optimization objective (default: 1.0).
-- `faiss_backend`: FAISS backend used for nearest-neighbor search when available (default: "auto"). Supported values are `"auto"`, `"gpu"`, and `"none"`.
-- `refinement`: Whether to use the two-phase refinement pipeline (default: True). If True, CosMAP first embeds the data into `refinement_dim` dimensions, then refines the result into `n_components` dimensions.
-- `refinement_dim`: Intermediate embedding dimension used during the first phase of the refinement pipeline (default: 30).
-- `refinement_n_neighbors`: Number of nearest neighbors used to construct the graph in the second refinement phase (default: 30).
-- `refinement_n_epochs`: Number of optimization epochs for the second refinement phase (default: None). If None, CosMAP uses a fraction of the first-phase epoch count.
-- `collect_loss`: Whether to collect optimization loss values during training (default: False). Can be `False`, `True`, `"phase1"`, `"phase2"`, `"both"`, or `"single"`.
-- `keep_intermediate`: Whether to keep intermediate refinement outputs such as the first-phase model, the intermediate embedding, and phase-specific graphs (default: False).
-- `cleanup_after_fit`: Whether to release Torch/GPU memory after fitting (default: True).
-- `_internal_allow_high_dim`: Internal flag allowing intermediate embeddings with more than 3 dimensions during the refinement pipeline (default: False).
-- `init_random_n_components`: Whether to initialize the second refinement phase using randomly selected dimensions from the intermediate embedding instead of the first `n_components` dimensions (default: False).
+- `n_components`: Number of dimensions in the final embedding (default: 2).
+- `n_neighbors`: Number of nearest neighbors used to build the high-dimensional graph (default: 15).
+- `metric`: Metric used to build the graph: `"cosine"`, `"euclidean"`, or `"precomputed"` (default: `"cosine"`).
+- `temperature`: Temperature controlling the sharpness of neighbor probabilities (default: 0.5).
+- `n_epochs`: Number of optimization epochs (default: None).
+- `learning_rate`: Initial learning rate (default: 1.0).
+- `min_dist`: Minimum distance between embedded points (default: 0.1).
+- `spread`: Scale of the embedded space (default: 1.0).
+- `init`: Initialization method or initial embedding array (default: `"spectral"`).
+- `random_state`: Random seed for reproducibility (default: None).
+- `use_gpu`: Whether to use GPU acceleration if available (default: True).
+- `verbose`: Whether to print progress information (default: False).
+- `refinement`: Whether to use the two-phase refinement pipeline (default: True).
+- `refinement_dim`: Intermediate dimension used in the first refinement phase (default: 30).
+- `refinement_n_neighbors`: Number of neighbors used in the second refinement phase (default: 30).
 
 ## API Compatibility
 
