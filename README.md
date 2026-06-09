@@ -119,6 +119,23 @@ plt.title("CosMAP embedding of MNIST dataset")
 plt.show()
 ```
 
+## Parameters
+- `n_components`: Number of dimensions in the final embedding (default: 2).
+- `n_neighbors`: Number of nearest neighbors used to build the high-dimensional graph (default: 15).
+- `metric`: Metric used to build the graph: `"cosine"`, `"euclidean"`, or `"precomputed"` (default: `"cosine"`).
+- `temperature`: Temperature controlling the sharpness of neighbor probabilities (default: 0.5).
+- `n_epochs`: Number of optimization epochs (default: None).
+- `learning_rate`: Initial learning rate (default: 1.0).
+- `min_dist`: Minimum distance between embedded points (default: 0.1).
+- `spread`: Scale of the embedded space (default: 1.0).
+- `init`: Initialization method or initial embedding array (default: `"spectral"`).
+- `random_state`: Random seed for reproducibility (default: None).
+- `use_gpu`: Whether to use GPU acceleration if available (default: True).
+- `verbose`: Whether to print progress information (default: False).
+- `refinement`: Whether to use the two-phase refinement pipeline (default: True).
+- `refinement_dim`: Intermediate dimension used in the first refinement phase (default: 30).
+- `refinement_n_neighbors`: Number of neighbors used in the second refinement phase (default: 30).
+
 ## Benchmarks
 
 To evaluate the visual quality of CosMAP embeddings, we applied the method to two standard handwritten digit datasets: **MNIST** and **USPS**. These datasets are widely used benchmarks in dimensionality reduction and manifold learning because they contain multiple visually similar classes, making cluster separation a non-trivial task.
@@ -181,23 +198,6 @@ Strict deterministic mode for experiments where exact repeatability is more impo
 CosMAP(random_state=42, deterministic=True)
 ```
 
-
-## Parameters
-- `n_components`: Number of dimensions in the final embedding (default: 2).
-- `n_neighbors`: Number of nearest neighbors used to build the high-dimensional graph (default: 15).
-- `metric`: Metric used to build the graph: `"cosine"`, `"euclidean"`, or `"precomputed"` (default: `"cosine"`).
-- `temperature`: Temperature controlling the sharpness of neighbor probabilities (default: 0.5).
-- `n_epochs`: Number of optimization epochs (default: None).
-- `learning_rate`: Initial learning rate (default: 1.0).
-- `min_dist`: Minimum distance between embedded points (default: 0.1).
-- `spread`: Scale of the embedded space (default: 1.0).
-- `init`: Initialization method or initial embedding array (default: `"spectral"`).
-- `random_state`: Random seed for reproducibility (default: None).
-- `use_gpu`: Whether to use GPU acceleration if available (default: True).
-- `verbose`: Whether to print progress information (default: False).
-- `refinement`: Whether to use the two-phase refinement pipeline (default: True).
-- `refinement_dim`: Intermediate dimension used in the first refinement phase (default: 30).
-- `refinement_n_neighbors`: Number of neighbors used in the second refinement phase (default: 30).
 
 ## API Compatibility
 
