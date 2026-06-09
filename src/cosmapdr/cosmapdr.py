@@ -138,6 +138,7 @@ class CosMAP(BaseEstimator, TransformerMixin):
         n_neighbors: int,
         n_epochs: int,
         init: Union[str, np.ndarray],
+        metric: Optional[str] = None,
         collect_loss: Union[bool, str],
     ) -> "CosMAP":
         """Create one internal CosMAP object for one refinement phase."""
@@ -154,7 +155,7 @@ class CosMAP(BaseEstimator, TransformerMixin):
             verbose=self.verbose,
             use_gpu=self.use_gpu,
             batch_size=self.batch_size,
-            metric=self.metric,
+            metric=self.metric if metric is None else metric,
             init=init,
             optimizer_backend=self.optimizer_backend,
             torch_batch_size=self.torch_batch_size,
@@ -241,6 +242,8 @@ class CosMAP(BaseEstimator, TransformerMixin):
         else:
             del phase1
             cleanup_torch_memory(verbose=self.verbose, label="after phase 1")
+        
+        phase2_metric = "euclidean" if str(self.metric).lower() == "precomputed" else self.metric
 
         phase2 = self._copy_for_phase(
             n_components=int(self.n_components),
@@ -248,6 +251,7 @@ class CosMAP(BaseEstimator, TransformerMixin):
             n_epochs=phase2_epochs,
             init=init_second,
             collect_loss="single" if self._should_collect_loss("phase2") else False,
+            metric=phase2_metric,
         )
 
         start_phase2 = time.time()
