@@ -292,7 +292,9 @@ class CosMAP(BaseEstimator, TransformerMixin):
         if self.verbose:
             print(f"{ts()} Phase 2 completed in {self.phase2_time_:.2f} seconds")
             total_time = self.phase2_time_ + self.phase1_time_
-            print(f"{ts()} All phase completed in {total_time:.2f} seconds")
+            minutes = int(total_time // 60)
+            seconds = int(total_time % 60)
+            print(f"{ts()} All phase of  CosMAP completed  in {minutes:.2f} minutes and {seconds:.2f} seconds.")
             print(f"{ts()} Two-phase CosMAP completed")
 
         return self
