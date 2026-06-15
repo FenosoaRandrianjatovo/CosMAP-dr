@@ -71,7 +71,6 @@ cosmap_ = CosMAP(
     deterministic=False,        # do not force slow deterministic CUDA kernels
     verbose=True,
     use_gpu=True,               # Using GPU acceleration 
-    optimizer_backend="torch_manual",
     metric="euclidean", # The default is  "cosine"
 )
 
@@ -106,8 +105,7 @@ cosmap_ = CosMAP(
     deterministic=False,        # do not force slow deterministic CUDA kernels
     verbose=True,
     use_gpu=True,
-    optimizer_backend="torch_manual",
-    faiss_backend="auto",
+    metric="cosine",
 )
 
 X_embedded = cosmap_.fit_transform(X)
