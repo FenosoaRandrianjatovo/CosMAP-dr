@@ -140,7 +140,7 @@ To evaluate the visual quality of CosMAP embeddings, we applied the method to tw
 
 The results below show that CosMAP produces well-structured two-dimensional embeddings with clearly separated digit clusters. In both datasets, samples belonging to the same digit tend to form compact neighborhoods, while different digit classes are projected into distinct regions of the embedding space. This suggests that CosMAP is able to preserve meaningful local relationships while maintaining a globally interpretable organization of the data.
 
-Compared with other dimensionality reduction methods, CosMAP provides visually sharper cluster boundaries and improved separation of true classes, particularly in regions where digit shapes are naturally ambiguous.
+Compared with other unsupervised dimensionality reduction methods under default settings, CosMAP provides visually sharper cluster boundaries and improved separation of true classes, particularly in regions where digit shapes are naturally ambiguous.
 
 
 <!-- <h3 align="center"></h3> -->
