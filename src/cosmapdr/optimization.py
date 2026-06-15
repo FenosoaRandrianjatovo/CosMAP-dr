@@ -503,6 +503,6 @@ def optimization_simplicial_set(
             embedding = embedding[-1].copy()
 
     else:
-        raise ValueError("optimizer_backend must be one of: 'torch_manual', 'torch_autograd', or 'umap'.")
+        raise ValueError("optimizer_backend must be one of: 'torch_manual', 'cpu_numba_manual', 'torch_autograd', or 'umap'.")
 
     return embedding.astype(np.float32), aux_data
