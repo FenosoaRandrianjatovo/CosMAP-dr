@@ -1,4 +1,8 @@
 # Author: Fenosoa  Randrianjatovo <RandrianjatovoFenosoa@gmail.com>
+"""
+The numba_cpu optimizer is a JIT-compiled, multi-threaded CPU implementation
+especially for high-dimensional data
+"""
 import numpy as np
 from numba import njit, prange, get_num_threads
 from typing import Optional, Tuple, Union
