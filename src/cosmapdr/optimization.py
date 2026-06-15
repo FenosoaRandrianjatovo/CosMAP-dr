@@ -20,7 +20,7 @@ except Exception:
 from .initialization import initialize_embedding, normalize_embedding_to_10
 from .reproducibility import seed_everything
 from .utils import INT32_MAX, INT32_MIN, get_torch_device, ts
-
+from .numba_optimization import optimize_layout_euclidean_numba_cpu
 
 def make_epochs_per_sample(weights: np.ndarray, n_epochs: int) -> np.ndarray:
     """UMAP helper kept for compatibility with the numba fallback backend."""
@@ -416,6 +416,31 @@ def optimization_simplicial_set(
             aux_data["loss_history"] = loss_history
         else:
             embedding = optimizer_result
+
+            
+    elif optimizer_backend == "cpu_numba_manual":
+        optimizer_result = optimize_layout_euclidean_numba_cpu(
+            embedding=embedding,
+            head=head,
+            tail=tail,
+            weight=weight,
+            n_epochs=n_epochs_max,
+            n_vertices=n_vertices,
+            a=a,
+            b=b,
+            gamma=gamma,
+            negative_sample_rate=negative_sample_rate,
+            initial_alpha=initial_alpha,
+            seed=seed,
+            verbose=verbose,
+            collect_loss=collect_loss,
+        )
+        if isinstance(optimizer_result, tuple):
+            embedding, loss_history = optimizer_result
+            aux_data["loss_history"] = loss_history
+        else:
+            embedding = optimizer_result
+
 
     elif optimizer_backend == "torch_autograd":
         optimizer_result = optimize_layout_euclidean_torch_autograd(
