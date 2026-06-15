@@ -25,13 +25,12 @@ def _epoch(
     rng_states, collect_loss,
 ):
     """
-    One epoch. Faithful to the original:
+    At each  epoch:
       - attractive update moves emb[h] += a*g, emb[t] -= a*g
       - repulsive update moves only emb[neg_h] += a*g
       - same gradient coefficients, same clip, same eps
     Returns (sum_pos_loss, sum_neg_loss, n_batches_counted) for the proxy.
     Parallelized over edges with prange; benign races on shared vertex rows
-    (acceptable for SGD, same as the GPU index_add_ which is also unordered).
     """
     n_edges = head.shape[0]
     eps = 1e-6
@@ -124,7 +123,7 @@ def optimize_layout_euclidean_numba_cpu(
     clip_value: float = 4.0,
     collect_loss: bool = False,
 ) -> Union[np.ndarray, Tuple[np.ndarray, list]]:
-    """JIT-compiled, multi-threaded CPU port of the manual optimizer (no torch)."""
+    """JIT-compiled, multi-threaded CPU port of the manual optimizer."""
 
     emb = np.array(embedding, dtype=np.float32, copy=True)
     head_t = np.ascontiguousarray(head, dtype=np.int64)
