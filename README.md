@@ -204,18 +204,21 @@ CosMAP follows the scikit-learn API conventions:
 ```python
 # Similar to UMAP, PaCMAP, t-SNE
 from cosmapdr import CosMAP
+from pacmap import PaCMAP
 from umap import UMAP
 from sklearn.manifold import TSNE
 
 # All have the same interface
-cosmap = CosMAP(n_components=2)
-umap = UMAP(n_components=2)
-tsne = TSNE(n_components=2)
+cosmap_ = CosMAP(n_components=2)
+pacmap_ = PaCMAP(n_components=2)
+umap_ = UMAP(n_components=2)
+tsne_ = TSNE(n_components=2)
 
 # Fit and transform
-X_cosmap = cosmap.fit_transform(X)
-X_umap = umap.fit_transform(X)
-X_tsne = tsne.fit_transform(X)
+X_cosmap = cosmap_.fit_transform(X)
+X_pacmap = pacmap_.fit_transform(X)
+X_umap = umap_.fit_transform(X)
+X_tsne = tsne_.fit_transform(X)
 ```
 
 ## Requirements
