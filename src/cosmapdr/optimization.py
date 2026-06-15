@@ -20,7 +20,7 @@ except Exception:
 from .initialization import initialize_embedding, normalize_embedding_to_10
 from .reproducibility import seed_everything
 from .utils import INT32_MAX, INT32_MIN, get_torch_device, ts
-from .numba_optimization import optimize_layout_euclidean_numba_cpu
+
 
 def make_epochs_per_sample(weights: np.ndarray, n_epochs: int) -> np.ndarray:
     """UMAP helper kept for compatibility with the numba fallback backend."""
@@ -419,6 +419,8 @@ def optimization_simplicial_set(
 
             
     elif optimizer_backend == "cpu_numba_manual":
+        from .numba_optimization import optimize_layout_euclidean_numba_cpu
+        
         optimizer_result = optimize_layout_euclidean_numba_cpu(
             embedding=embedding,
             head=head,
