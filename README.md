@@ -71,7 +71,7 @@ cosmap_ = CosMAP(
     deterministic=False,        # do not force slow deterministic CUDA kernels
     verbose=True,
     use_gpu=True,               # Using GPU acceleration 
-    metric="euclidean", # The default is  "cosine"
+    metric="euclidean",         # The default is  "cosine"
 )
 
 # Fit and transform the data
