@@ -362,7 +362,7 @@ class CosMAP(BaseEstimator, TransformerMixin):
             if self.verbose:
                 print(
                     f"{ts()} No CUDA or MPS device is available; switching layout optimizer "
-                    f"from '{effective_optimizer_backend}' to 'umap layout optimization'."
+                    f"from '{effective_optimizer_backend}' to 'cpu numba manual layout optimization'."
                 )
             effective_optimizer_backend = "cpu_numba_manual" #or "umap" if you want to use the original UMAP optimizer as fallback, but it is not optimized for high-dimensional data for CosMAP and may be very slow. .
 
