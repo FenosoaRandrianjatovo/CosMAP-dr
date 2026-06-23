@@ -175,8 +175,7 @@ class CosMAP(BaseEstimator, TransformerMixin):
 
     def _fit_refinement_pipeline(self, X: np.ndarray, y: Optional[np.ndarray] = None) -> "CosMAP":
         """Run the two-phase CosMAP refinement pipeline."""
-        if int(self.n_components) not in {2, 3}:
-            raise ValueError("When refinement=True, final n_components must be 2 or 3.")
+
         if int(self.refinement_dim) <= int(self.n_components):
             raise ValueError("refinement_dim must be larger than final n_components.")
         if int(self.refinement_n_neighbors) <= 0:
