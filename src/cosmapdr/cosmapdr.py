@@ -396,10 +396,10 @@ class CosMAP(BaseEstimator, TransformerMixin):
             deterministic=bool(self.deterministic),
             metric=self.metric,
             metric_kwds={},
-            densmap=False,
+            densmap=False, #We do not implementated the Dense CosMAP
             densmap_kwds={},
             output_dens=False,
-            output_metric="euclidean",
+            output_metric="euclidean", # Only euclidean output metric for now
             output_metric_kwds={},
             euclidean_output=True,
             parallel=parallel,
