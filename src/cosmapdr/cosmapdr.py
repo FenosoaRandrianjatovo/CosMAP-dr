@@ -366,9 +366,9 @@ class CosMAP(BaseEstimator, TransformerMixin):
             effective_optimizer_backend = "cpu_numba_manual" #or "umap" if you want to use the original UMAP optimizer as fallback, but it is not optimized for high-dimensional data for CosMAP and may be very slow. .
 
 
-        # Do NOT fall back to CPU/UMAP when GPU is available.  The selected
+        # Do NOT fall back to CPU from UMAP Optimizer when GPU is available.  The selected
         # torch optimizer uses get_torch_device(use_gpu), so CUDA is used when
-        # available.  If no GPU exists,  it explicitly choose optimizer_backend='umap' 
+        # available.  If no GPU exists,  it explicitly choose optimizer_backend='cpu_numba_manual' 
         
         device = get_torch_device(use_gpu=self.use_gpu)
         if self.verbose:
