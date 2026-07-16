@@ -343,9 +343,8 @@ class CosMAP(BaseEstimator, TransformerMixin):
 
         effective_optimizer_backend = str(self.optimizer_backend).lower()
 
-        # Torch optimizer can run on CUDA or MPS.
-        # Do not fall back to UMAP just because CUDA is unavailable:
-        # on MacBook, CUDA is unavailable but MPS may be available.
+        # Torch optimizer can run on CUDA NVIDIA or MPS.
+        # on MacBook, CUDA is unavailable but MPS may be available .
         torch_gpu_available = (
             bool(self.use_gpu)
             and (
