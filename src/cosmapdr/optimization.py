@@ -186,7 +186,13 @@ def optimize_layout_euclidean_torch_manual(
             or epoch == int(n_epochs) - 1
             or (epoch + 1) % max(1, int(n_epochs) // 10) == 0
         ):
-            print(f"{ts()} Epoch {epoch + 1:4d}/{int(n_epochs)} | alpha={alpha:.6f} | device={device}")
+            
+            
+            if collect_loss:
+                print(f"{ts()} Epoch {epoch + 1:4d}/{int(n_epochs)} | alpha={alpha:.6f} |  loss={epoch_loss:.6f} | device={device}")
+            else:
+                print(f"{ts()} Epoch {epoch + 1:4d}/{int(n_epochs)} | alpha={alpha:.6f} | device={device}")
+                
 
     embedding_np = emb.detach().cpu().numpy().astype(np.float32)
     if collect_loss:
