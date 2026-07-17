@@ -1,7 +1,7 @@
 # CosMAP
 <div align="justify">
 
-We introduce **Contrastive Manifold Approximation and Projection** (CosMAP), a graph-based unsupervised dimensionality-reduction method designed to produce more faithful and interpretable low-dimensional representations. CosMAP extends the graph-based framework of Uniform Manifold Approximation and Projection by combining cosine-similarity-based affinities with a temperature-normalized contrastive formulation for constructing the high-dimensional neighbourhood graph. The resulting affinities are optimized in the low-dimensional space through an attractive–repulsive objective. CosMAP further incorporates a two-phase refinement strategy in which an intermediate higher-dimensional representation is first learned, then used to reconstruct the neighbourhood graph and initialize the final low-dimensional embedding.
+We introduce **Contrastive Manifold Approximation and Projection** (CosMAP), a graph-based unsupervised dimensionality-reduction method designed to produce more faithful and interpretable low-dimensional representations. CosMAP extends the graph-based framework of Uniform Manifold Approximation and Projection by combining cosine-similarity-based affinities with a temperature-normalized contrastive formulation for constructing the high-dimensional neighbourhood graph. The resulting affinities are optimized in the low-dimensional space through an attractive–repulsive objective using Negative Sampling . CosMAP further incorporates a two-phase refinement strategy in which an intermediate higher-dimensional representation is first learned, then used to reconstruct the neighbourhood graph and initialize the final low-dimensional embedding.
 
 </div>
 
