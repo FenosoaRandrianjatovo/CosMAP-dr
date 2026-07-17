@@ -13,7 +13,7 @@ CosMAP can be installed directly from GitHub or from source.
 
 ### Prerequisites
 
-- Python >= 3.7
+- Python >= 3.9
 - pip (Python package installer)
   
 
