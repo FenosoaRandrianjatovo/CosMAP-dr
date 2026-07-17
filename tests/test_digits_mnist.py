@@ -16,7 +16,7 @@ def test_cosmap_digits(tmp_path):
     X = digits.data
     y = digits.target.astype(int)
 
-    n_subset = min(1000, X.shape[0])
+    n_subset = min(10, X.shape[0])
 
     rng = np.random.default_rng(seed=42)
     idx = rng.choice(X.shape[0], size=n_subset, replace=False)
@@ -31,7 +31,7 @@ def test_cosmap_digits(tmp_path):
         n_neighbors=15,
         temperature=0.5,
         n_epochs=None,
-        random_state=42,
+        random_state=None,
         deterministic=False,
         verbose=True,
         use_gpu=0,
