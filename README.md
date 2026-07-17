@@ -25,12 +25,7 @@ This is the quickest way to install the latest version:
 pip install git+https://github.com/FenosoaRandrianjatovo/CosMAP-dr.git
 ```
 
-For Google Colab, use:
 
-```python
-import sys
-!{sys.executable} -m pip install git+https://github.com/FenosoaRandrianjatovo/CosMAP-dr.git
-```
 
 
 ### Option 2 — Install from source (Recommended for development)
@@ -62,12 +57,7 @@ source .venv/bin/activate
 pip install .
 ```
 
-4. For Google Colab, use a standard local installation instead:
 
-```python
-import sys
-!{sys.executable} -m pip install .
-```
 
 ## Check GPU / FAISS environment
 
