@@ -240,7 +240,7 @@ X_tsne = tsne_.fit_transform(X)
 
 ## Requirements
 
-- Python >= 3.7
+- Python >= 3.9
 - NumPy >= 1.19.0
 - SciPy >= 1.5.0
 - scikit-learn >= 0.24.0
