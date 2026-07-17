@@ -20,6 +20,31 @@ dependencies = [
   "umap-learn",
   "pynndescent"
 ]
+keywords = [
+  "dimensionality reduction",
+  "manifold learning",
+  "contrastive learning",
+  "data visualization",
+  "single-cell RNA sequencing"
+]
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: BSD License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Scientific/Engineering :: Bio-Informatics"
+]
+
+[project.urls]
+Homepage = "https://github.com/FenosoaRandrianjatovo/CosMAP-dr"
+Repository = "https://github.com/FenosoaRandrianjatovo/CosMAP-dr"
+Issues = "https://github.com/FenosoaRandrianjatovo/CosMAP-dr/issues"
 
 [project.optional-dependencies]
 gpu = ["faiss-gpu"]
