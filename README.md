@@ -5,6 +5,49 @@ We introduce **Contrastive Manifold Approximation and Projection** (CosMAP), a g
 
 </div>
 
+
+## Benchmarks
+
+To evaluate the visual quality of CosMAP embeddings, we applied the method to two standard handwritten digit datasets: **MNIST** and **USPS**. These datasets are widely used benchmarks in dimensionality reduction and manifold learning because they contain multiple visually similar classes, making cluster separation a non-trivial task.
+
+The results below show that CosMAP produces well-structured two-dimensional embeddings with clearly separated digit clusters. In both datasets, samples belonging to the same digit tend to form compact neighborhoods, while different digit classes are projected into distinct regions of the embedding space. This suggests that CosMAP is able to preserve meaningful local relationships while maintaining a globally interpretable organization of the data.
+
+Compared with other unsupervised dimensionality reduction methods under default settings, CosMAP provides visually sharper cluster boundaries and improved separation of true classes, particularly in regions where digit shapes are naturally ambiguous.
+
+
+<!-- <h3 align="center"></h3> -->
+
+### MNIST
+
+<p align="center">
+  <img src="https://github.com/FenosoaRandrianjatovo/CosMAP-dr/blob/main/images/mnist.png" alt="CosMAP visualization of MNIST" >
+</p>
+
+<p align="center">
+  <strong>Figure 1. CosMAP embedding of the MNIST dataset.</strong><br>
+    
+  Two-dimensional visualization of the MNIST handwritten digit dataset containing <strong>70,000 samples</strong> and <strong>784 features</strong>. Each point represents one image, and colors correspond to the true digit labels.
+</p>
+
+
+
+
+<!-- <h3 align="center">MNIST</h3> -->
+
+### USPS
+
+<p align="center">
+  <img src="https://github.com/FenosoaRandrianjatovo/CosMAP-dr/blob/main/images/usps.png" alt="CosMAP visualization of MNIST">
+</p>
+
+<p align="center">
+  <strong>Figure 2. CosMAP embedding of the USPS dataset.</strong><br>
+
+
+
+Two-dimensional visualization of the USPS handwritten digit dataset containing **9,298 samples** and **256 features**. Despite the smaller image resolution and the higher visual similarity between some digit classes, CosMAP still produces a well-organized embedding with clearly distinguishable clusters. This demonstrates the robustness of the method across different handwritten digit datasets.
+
+
 ## Installation
 
 ### Prerequisites
@@ -136,47 +179,6 @@ plt.show()
 - `refinement`: Whether to use the two-phase refinement pipeline (default: True).
 - `refinement_dim`: Intermediate dimension used in the first refinement phase (default: 30).
 - `refinement_n_neighbors`: Number of neighbors used in the second refinement phase (default: 30).
-
-## Benchmarks
-
-To evaluate the visual quality of CosMAP embeddings, we applied the method to two standard handwritten digit datasets: **MNIST** and **USPS**. These datasets are widely used benchmarks in dimensionality reduction and manifold learning because they contain multiple visually similar classes, making cluster separation a non-trivial task.
-
-The results below show that CosMAP produces well-structured two-dimensional embeddings with clearly separated digit clusters. In both datasets, samples belonging to the same digit tend to form compact neighborhoods, while different digit classes are projected into distinct regions of the embedding space. This suggests that CosMAP is able to preserve meaningful local relationships while maintaining a globally interpretable organization of the data.
-
-Compared with other unsupervised dimensionality reduction methods under default settings, CosMAP provides visually sharper cluster boundaries and improved separation of true classes, particularly in regions where digit shapes are naturally ambiguous.
-
-
-<!-- <h3 align="center"></h3> -->
-
-### MNIST
-
-<p align="center">
-  <img src="https://github.com/FenosoaRandrianjatovo/CosMAP-dr/blob/main/images/mnist.png" alt="CosMAP visualization of MNIST" >
-</p>
-
-<p align="center">
-  <strong>Figure 1. CosMAP embedding of the MNIST dataset.</strong><br>
-    
-  Two-dimensional visualization of the MNIST handwritten digit dataset containing <strong>70,000 samples</strong> and <strong>784 features</strong>. Each point represents one image, and colors correspond to the true digit labels.
-</p>
-
-
-
-
-<!-- <h3 align="center">MNIST</h3> -->
-
-### USPS
-
-<p align="center">
-  <img src="https://github.com/FenosoaRandrianjatovo/CosMAP-dr/blob/main/images/usps.png" alt="CosMAP visualization of MNIST">
-</p>
-
-<p align="center">
-  <strong>Figure 2. CosMAP embedding of the USPS dataset.</strong><br>
-
-
-
-Two-dimensional visualization of the USPS handwritten digit dataset containing **9,298 samples** and **256 features**. Despite the smaller image resolution and the higher visual similarity between some digit classes, CosMAP still produces a well-organized embedding with clearly distinguishable clusters. This demonstrates the robustness of the method across different handwritten digit datasets.
 
 
 ## Reproducibility modes
