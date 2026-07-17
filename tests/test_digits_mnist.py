@@ -35,7 +35,7 @@ def test_cosmap_mnist(tmp_path):
                       random_state=42,          # no fixed seed, faster stochastic path
                       deterministic=False,        # do not force slow deterministic CUDA kernels
                       verbose=True,
-                      use_gpu=True,
+                      use_gpu=0,
                       metric="cosine",
                   )
 
