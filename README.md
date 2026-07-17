@@ -8,20 +8,41 @@ We introduce **Contrastive Manifold Approximation and Projection** (CosMAP), a g
 
 ## Installation
 
+CosMAP can be installed directly from GitHub or from source.
+
 ### Prerequisites
 
 - Python >= 3.7
 - pip (Python package installer)
+  
 
-### From source (Recommended)
+## Option 1 — Install from GitHub
+
+This is the quickest way to install the latest version:
+
+```bash
+pip install git+https://github.com/FenosoaRandrianjatovo/CosMAP-dr.git
+```
+
+For Google Colab, use:
+
+```python
+import sys
+!{sys.executable} -m pip install git+https://github.com/FenosoaRandrianjatovo/CosMAP-dr.git
+```
+
+
+## Option 2 — Install from source (Recommended for development)
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/FenosoaRandrianjatovo/CosMAP-dr.git
 cd CosMAP-dr
 ```
 
 2. Create and activate a virtual environment:
+
 ```bash
 # Create virtual environment
 python3 -m venv .venv
@@ -29,23 +50,23 @@ python3 -m venv .venv
 # Activate virtual environment
 # On macOS/Linux:
 source .venv/bin/activate
+
 # On Windows:
 # .venv\Scripts\activate
 ```
 
-3. Install the package (From the project root):
-
+3. Install the package from the project root:
 
 ```bash
-pip install  .
+pip install .
 ```
-4. For Google Colab, use a normal installation instead:
-   
-```bash
+
+4. For Google Colab, use a standard local installation instead:
+
+```python
 import sys
 !{sys.executable} -m pip install .
 ```
-
 
 ## Check GPU / FAISS environment
 
