@@ -16,7 +16,7 @@ CosMAP can be installed directly from GitHub or from source.
 - pip (Python package installer)
   
 
-## Option 1 — Install from GitHub
+### Option 1 — Install from GitHub
 
 This is the quickest way to install the latest version:
 
@@ -32,7 +32,7 @@ import sys
 ```
 
 
-## Option 2 — Install from source (Recommended for development)
+### Option 2 — Install from source (Recommended for development)
 
 1. Clone the repository:
 
