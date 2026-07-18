@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cosmap-dr"
-version = "0.1.0"
+version = "0.1.1"
 description = "CosMAP: Contrastive Manifold Approximation and Projection"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -38,6 +38,7 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Scientific/Engineering :: Machine Learning",
   "Topic :: Scientific/Engineering :: Bio-Informatics"
 ]
 
