@@ -9,7 +9,7 @@ We introduce **Contrastive Manifold Approximation and Projection** (CosMAP), a g
 
 ## Installation
 
-CosMAP can be installed directly from GitHub or from source.
+CosMAP can be installed directly from PyPI or from source.
 
 ### Prerequisites
 
@@ -17,16 +17,13 @@ CosMAP can be installed directly from GitHub or from source.
 - pip (Python package installer)
   
 
-### Option 1 — Install from GitHub
+### Option 1 — Install from PyPI
 
 This is the quickest way to install the latest version:
 
 ```bash
-pip install git+https://github.com/FenosoaRandrianjatovo/CosMAP-dr.git
+pip install cosmap-dr
 ```
-
-
-
 
 ### Option 2 — Install from source (Recommended for development)
 
