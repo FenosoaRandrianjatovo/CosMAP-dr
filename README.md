@@ -78,7 +78,7 @@ Compared with other unsupervised dimensionality reduction methods under default 
 ### MNIST
 
 <p align="center">
-  <img src="https://github.com/FenosoaRandrianjatovo/CosMAP-dr/blob/main/images/mnist.png" alt="CosMAP visualization of MNIST" >
+  <img src="https://raw.githubusercontent.com/FenosoaRandrianjatovo/CosMAP-dr/main/images/mnist.png" alt="CosMAP visualization of MNIST" >
 </p>
 
 <p align="center">
@@ -95,7 +95,7 @@ Compared with other unsupervised dimensionality reduction methods under default 
 ### USPS
 
 <p align="center">
-  <img src="https://github.com/FenosoaRandrianjatovo/CosMAP-dr/blob/main/images/usps.png" alt="CosMAP visualization of MNIST">
+  <img src="https://raw.githubusercontent.com/FenosoaRandrianjatovo/CosMAP-dr/main/images/usps.png" alt="CosMAP visualization of MNIST">
 </p>
 
 <p align="center">
