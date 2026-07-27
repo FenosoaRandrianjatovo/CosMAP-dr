@@ -103,7 +103,7 @@ Compared with other unsupervised dimensionality reduction methods under default 
 ### USPS
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/FenosoaRandrianjatovo/CosMAP-dr/main/images/usps.png" alt="CosMAP visualization of MNIST">
+  <img src="https://raw.githubusercontent.com/FenosoaRandrianjatovo/CosMAP-dr/main/images/usps.png" alt="CosMAP visualization of USPS">
 </p>
 
 <p align="center">
