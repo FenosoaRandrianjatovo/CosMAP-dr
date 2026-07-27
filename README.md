@@ -24,7 +24,12 @@ This is the quickest way to install the latest version:
 ```bash
 pip install cosmap-dr
 ```
+Or 
 
+```bash
+pip install git+https://github.com/FenosoaRandrianjatovo/CosMAP-dr.git
+
+```
 ### Option 2 — Install from source (Recommended for development)
 
 1. Clone the repository:
