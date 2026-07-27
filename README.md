@@ -24,12 +24,7 @@ This is the quickest way to install the latest version:
 ```bash
 pip install cosmap-dr
 ```
-Or 
 
-```bash
-pip install git+https://github.com/FenosoaRandrianjatovo/CosMAP-dr.git
-
-```
 ### Option 2 — Install from source (Recommended for development)
 
 1. Clone the repository:
@@ -56,9 +51,17 @@ source .venv/bin/activate
 3. Install the package from the project root:
 
 ```bash
-pip install .
+pip install -e .
 ```
 
+```
+This installs CosMAP in editable mode, which is recommended for development because code changes take effect without reinstalling
+```
+4. Alternatively, install directly from GitHub:
+
+```bash
+pip install git+https://github.com/FenosoaRandrianjatovo/CosMAP-dr.git
+```
 
 
 ## Check GPU / FAISS environment
