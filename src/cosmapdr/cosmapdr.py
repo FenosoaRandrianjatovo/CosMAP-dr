@@ -316,6 +316,9 @@ class CosMAP(BaseEstimator, TransformerMixin):
         """Fit CosMAP to X."""
         X = check_array(X, accept_sparse=False, dtype=np.float32)
 
+        if X.shape[1]<30:
+            self.refinement= False
+
         if bool(self.refinement):
             return self._fit_refinement_pipeline(X, y)
 
