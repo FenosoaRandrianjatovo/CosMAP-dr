@@ -31,7 +31,7 @@ def test_cosmap_digits(tmp_path):
         n_neighbors=15,
         temperature=0.5,
         n_epochs=None,
-        random_state=42,
+        random_state=422,
         deterministic=False,
         verbose=True,
         use_gpu=0,
