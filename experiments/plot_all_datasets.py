@@ -1,4 +1,11 @@
 """
+Author: Fenosoa Randrianjatovo 
+
+
+
+This file is designed to be used directly in a notebook or as a Python module.
+
+
 Script to plot all embedding comparison visualizations for all datasets.
 Uses the plot_embeddings_comparison function from visualition.py
 """
