@@ -1,6 +1,7 @@
 #!/bin/bash
 # Usage:
 #   bash submit_benchmark_array.sh [SEED] [MAX_PARALLEL]
+#   bash submit_benchmark_array.sh 42 3
 #
 # Examples:
 #   bash submit_benchmark_array.sh
@@ -36,4 +37,3 @@ sbatch \
     benchmark_array.sbatch
 
 
-# bash submit_benchmark_array.sh 42 3

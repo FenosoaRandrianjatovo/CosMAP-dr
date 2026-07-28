@@ -32,6 +32,10 @@ __pycache__/
 experiments/comparison_with_seed_*/
 experiments/logs/
 
+experiments/resultings_2d_embeddings/
+
+experiments/Image_comparison_with_seed_*/
+
 # Slurm output files
 slurm-*.out
 *.out
@@ -42,5 +46,5 @@ experiments/**/.done/
 
 # Temporary files
 .DS_Store
-experiments/run_experiments.ipynb
+
 .ipynb_checkpoints/
