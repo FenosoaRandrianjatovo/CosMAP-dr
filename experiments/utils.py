@@ -1,3 +1,10 @@
+"""
+Author: Fenosoa Randrianjatovo 
+
+This file is designed to be used directly in a notebook or as a Python module.
+It contains functions to plot embedding comparisons for all datasets in the CosMAP benchmark.
+
+"""
 from pathlib import Path
 
 import matplotlib.pyplot as plt

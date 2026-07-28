@@ -1,5 +1,10 @@
 # @title Benchmark
+"""
+Author: Fenosoa Randrianjatovo 
 
+This file contains functions to evaluate embedding methods using multiple runs and compute average metrics. It includes 5 clustering quality metrics.
+
+"""
 
 import numpy as np
 import matplotlib.pyplot as plt

@@ -205,9 +205,6 @@ def _sanitize_cosmap_params(cosmap_params: Optional[Dict[str, Any]]) -> Optional
 
 
 
-# ---------------------------------------------------------------------
-# Method registry
-# ---------------------------------------------------------------------
 
 
 def build_method_registry(
@@ -219,7 +216,7 @@ def build_method_registry(
     pacmap_metric: str = "euclidean",
 ) -> Dict[str, Dict[str, Any]]:
     """
-    Build a method dictionary similar to your previous bench_mark.py.
+    Build a registry of dimensionality reduction methods with their parameters.
 
     Keys are intentionally named like cosmap_2d, umap_2d, pacmap_2d, etc.
 
@@ -232,6 +229,7 @@ def build_method_registry(
         model.fit_transform(X.astype(float))
 
     following the official contrastive-ne examples.
+    https://github.com/berenslab/contrastive-ne
     """
 
     cosmap_params = _sanitize_cosmap_params(cosmap_params)
@@ -369,9 +367,6 @@ def build_method_registry(
     }
 
 
-# ---------------------------------------------------------------------
-# Plotting helpers
-# ---------------------------------------------------------------------
 
 
 METHOD_DISPLAY_NAMES: Dict[str, str] = {
@@ -539,7 +534,7 @@ def plot_embeddings_grid(
 
 
 # ---------------------------------------------------------------------
-# Main benchmark runner
+# This our main benchmark runner
 # ---------------------------------------------------------------------
 
 
@@ -556,7 +551,7 @@ def run_dimensionality_reduction_benchmark(
     method_params_override: Optional[Dict[str, Dict[str, Any]]] = None,
     n_components: int = 2,
     umap_metric: str = "euclidean", #default
-    pacmap_metric: str = "euclidean",
+    pacmap_metric: str = "euclidean", #default
     save_individual_files: bool = False,
     save_failed_errors: bool = True,
     overwrite: bool = True,
@@ -582,9 +577,7 @@ def run_dimensionality_reduction_benchmark(
     embeddings_dict, timing_dict, output_folder
     """
 
-    # -----------------------------
-    # Data loading
-    # -----------------------------
+
     if X is None or y is None:
         if data_path is None:
             data_path = "."
@@ -605,9 +598,9 @@ def run_dimensionality_reduction_benchmark(
         print(f"   y shape: {y.shape}")
         print(f"   unique labels: {len(np.unique(y))}")
 
-    # -----------------------------
+
     # Output folder
-    # -----------------------------
+
     if output_dir is None:
         # stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         # output_folder = f"Cosmap_comparison_{data_name}_seed_{random_state}_{stamp}"
@@ -634,9 +627,9 @@ def run_dimensionality_reduction_benchmark(
         timing_dict = np.load(timing_path, allow_pickle=True).item() if os.path.exists(timing_path) else {}
         return embeddings_dict, timing_dict, output_folder
 
-    # -----------------------------
-    #  Methods
-    # -----------------------------
+
+    #  Build Methods
+
     all_methods = build_method_registry(
         random_state=random_state,
         n_components=n_components,
@@ -665,9 +658,9 @@ def run_dimensionality_reduction_benchmark(
         print(f" Methods to run: {list(methods.keys())}")
         print(f"Output folder: {output_folder}")
 
-    # -----------------------------
+
     # Storage compatible
-    # -----------------------------
+
     embeddings_dict: Dict[str, Any] = {
         f"X_{data_name}": X,
         f"labels_{data_name}": y,
@@ -677,9 +670,9 @@ def run_dimensionality_reduction_benchmark(
     timing_dict: Dict[str, float] = {}
     errors_dict: Dict[str, str] = {}
 
-    # -----------------------------
+
     # Run methods
-    # -----------------------------
+
     iterator = tqdm(methods.items(), total=len(methods), disable=not verbose, desc="Running DR")
 
     for method_name, cfg in iterator:
@@ -722,17 +715,15 @@ def run_dimensionality_reduction_benchmark(
                 tqdm.write(f"❌ {method_name:15} | failed after {total_time:.2f}s | {repr(e)}")
             continue
 
-    # -----------------------------
-    # Save results
-    # -----------------------------
+
+    # Let's Save our results
+
     _safe_np_save(embeddings_path, embeddings_dict)
     _safe_np_save(timing_path, timing_dict)
     if save_failed_errors:
         _safe_np_save(errors_path, errors_dict)
 
-    # -----------------------------
-    # Summary
-    # -----------------------------
+
     successful = [k for k in methods if k in embeddings_dict]
     failed = [k for k in methods if k not in embeddings_dict]
 
