@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Run one dataset from the CosMAP benchmark as a Slurm array task."""
+"""
+Author: Fenosoa Randrianjatovo 
+Run one dataset from the CosMAP benchmark as a Slurm array task.
+
+"""
 
 from __future__ import annotations
 
