@@ -20,3 +20,25 @@ venv_test/
 
 # macOS
 .DS_Store
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Jupyter temporary files
+.ipynb_checkpoints/
+
+# Benchmark-generated results
+experiments/comparison_with_seed_*/
+experiments/logs/
+
+# Slurm output files
+slurm-*.out
+*.out
+*.err
+
+# Completion markers
+experiments/**/.done/
+
+# Temporary files
+.DS_Store
