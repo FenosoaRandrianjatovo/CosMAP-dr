@@ -258,6 +258,23 @@ Optional:
 
 - FAISS (for faster GPU-accelerated nearest neighbor search)
 
+
+## Citation
+
+If you use CosMAP in your research, please cite our preprint:
+
+```bibtex
+@misc{randrianjatovo2026cosmap,
+  title         = {CosMAP: Contrastive Manifold Approximation and Projection for Dimensionality Reduction of Omics and Genealogical Data},
+  author        = {Randrianjatovo, Fenosoa and Saleh, Maya and Girard, Simon and Barry, Amadou},
+  year          = {2026},
+  eprint        = {2608.11269},
+  archivePrefix = {arXiv},
+  primaryClass  = {q-bio.GN},
+  url           = {https://arxiv.org/abs/2608.11269}
+}
+```
+
 ## License
 
 BSD 2-Clause License
